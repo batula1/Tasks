@@ -17,7 +17,7 @@ public class UserDaoJDBCImpl implements UserDao {
     public void createUsersTable() {
             try(Statement statement = connect.createStatement()){
                 statement.executeUpdate("CREATE TABLE IF NOT EXISTS users " +
-                        "(id SERIAL primary key, name varchar(20), lastname varchar(20), age INT,)");
+                        "(id SERIAL primary key, name varchar(20), lastName varchar(20), age INT)");
             } catch (SQLException exp) {
                 exp.printStackTrace();
             }
@@ -25,7 +25,7 @@ public class UserDaoJDBCImpl implements UserDao {
 
     public void dropUsersTable() {
             try(Statement statement = connect.createStatement()){
-                statement.executeUpdate("DROP TABLE IF NOT EXISTS users");
+                statement.executeUpdate("DROP TABLE IF EXISTS users");
 
             } catch (SQLException exp) {
                 exp.printStackTrace();
@@ -35,7 +35,7 @@ public class UserDaoJDBCImpl implements UserDao {
 
     public void saveUser(String name, String lastName, byte age) {
             try (PreparedStatement addUserTab = connect.prepareStatement(
-                    "INSERT INTO users (name, lastname, age) VALUES (?, ?, ?)")){
+                    "INSERT INTO users (name, lastName, age) VALUES (?, ?, ?)")){
                 addUserTab.setString(1, name);
                 addUserTab.setString(2, lastName);
                 addUserTab.setByte(3, age);

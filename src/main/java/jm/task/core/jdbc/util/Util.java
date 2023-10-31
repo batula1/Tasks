@@ -7,9 +7,11 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
+
 public class Util {
 
-    private static Connection conn = null;
+
+    private static Connection connect = null;
 
     private Util() {
 
@@ -29,11 +31,11 @@ public class Util {
 
     public static Connection getConnection() {
         Properties prop = getProperties();
-        try (Connection conn = DriverManager.getConnection(
+        try {connect = DriverManager.getConnection(
                 prop.getProperty("db.url"),
                 prop.getProperty("db.username"),
-                prop.getProperty("db.password"))){
-            if(conn != null){
+                prop.getProperty("db.password"));
+            if(connect != null){
                 System.out.println("connection");
             }else {
                 System.out.println("connection failed ");
@@ -44,7 +46,7 @@ public class Util {
         } catch (Exception exp){
             exp.printStackTrace();
         }
-        return conn;
+        return connect;
     }
 }
 
