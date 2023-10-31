@@ -9,6 +9,8 @@ import java.util.Properties;
 
 public class Util {
 
+    private static Connection conn = null;
+
     private Util() {
 
     }
@@ -25,9 +27,10 @@ public class Util {
         return properties;
     }
 
-    public static void getConnection() {
+    public static Connection getConnection() {
         Properties prop = getProperties();
-        try (Connection conn = DriverManager.getConnection(prop.getProperty("db.url"),
+        try (Connection conn = DriverManager.getConnection(
+                prop.getProperty("db.url"),
                 prop.getProperty("db.username"),
                 prop.getProperty("db.password"))){
             if(conn != null){
@@ -41,6 +44,7 @@ public class Util {
         } catch (Exception exp){
             exp.printStackTrace();
         }
+        return conn;
     }
 }
 

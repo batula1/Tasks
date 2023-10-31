@@ -1,35 +1,94 @@
 package jm.task.core.jdbc.dao;
 
 import jm.task.core.jdbc.model.User;
+import jm.task.core.jdbc.util.Util;
 
+import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class UserDaoJDBCImpl implements UserDao {
-    public UserDaoJDBCImpl() {
+        public static Connection connect = Util.getConnection();
+
+        public UserDaoJDBCImpl() {
 
     }
 
     public void createUsersTable() {
-
+            try(Statement statement = connect.createStatement()){
+                statement.executeUpdate("CREATE TABLE IF NOT EXISTS users " +
+                        "(id SERIAL primary key, name varchar(20), lastname varchar(20), age INT,)");
+            } catch (SQLException exp) {
+                exp.printStackTrace();
+            }
     }
 
     public void dropUsersTable() {
+            try(Statement statement = connect.createStatement()){
+                statement.executeUpdate("DROP TABLE IF NOT EXISTS users");
+
+            } catch (SQLException exp) {
+                exp.printStackTrace();
+            }
 
     }
 
     public void saveUser(String name, String lastName, byte age) {
+            try (PreparedStatement addUserTab = connect.prepareStatement(
+                    "INSERT INTO users (name, lastname, age) VALUES (?, ?, ?)")){
+                addUserTab.setString(1, name);
+                addUserTab.setString(2, lastName);
+                addUserTab.setByte(3, age);
+                addUserTab.executeUpdate();
 
+            } catch (SQLException exp) {
+                exp.printStackTrace();
+            }
     }
+
 
     public void removeUserById(long id) {
+            try (PreparedStatement delUserTab = connect.prepareStatement("DELETE FROM users WHERE id = ?")){
+                delUserTab.setLong(1,id);
+                delUserTab.executeUpdate();
 
+            } catch (SQLException exp) {
+                exp.printStackTrace();
+            }
     }
 
+
+
+
     public List<User> getAllUsers() {
-        return null;
+            List<User> list = new ArrayList<>();
+            try (PreparedStatement prepStat = connect.prepareStatement("SELECT * FROM users");
+                 ResultSet resSet = prepStat.executeQuery()
+            ){
+                while (resSet.next()){
+                    User user = new User(
+                            resSet.getString(2),
+                            resSet.getString(3),
+                            resSet.getByte(4));
+                    user.setId(resSet.getLong("id"));
+                    list.add(user);
+                    System.out.println(user);
+
+                }
+
+
+            } catch (SQLException exp) {
+                exp.printStackTrace();
+            }
+        return list;
     }
 
     public void cleanUsersTable() {
+        try (Statement statement = connect.createStatement()) {
+            statement.executeUpdate("TRUNCATE TABLE users");
+        } catch (SQLException exp) {
+            exp.printStackTrace();
+        }
 
     }
 }
