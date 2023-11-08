@@ -11,7 +11,7 @@ import java.util.Properties;
 public class Util {
 
 
-    private static Connection connect = null;
+
 
     private Util() {
 
@@ -31,7 +31,8 @@ public class Util {
 
     public static Connection getConnection() {
         Properties prop = getProperties();
-        try {connect = DriverManager.getConnection(
+         Connection connect = null;
+        try  {connect = DriverManager.getConnection(
                 prop.getProperty("db.url"),
                 prop.getProperty("db.username"),
                 prop.getProperty("db.password"));
